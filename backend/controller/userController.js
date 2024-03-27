@@ -9,7 +9,7 @@ const createUser = asyncHandler(async (req, res) => {
 	if (!username || !email || !password) {
 		throw new Error("please enter your data");
 	}
-	const foundUser = await user.findOne({ email }).exec();
+	const foundUser = await user.findOne({ email })
 	if (foundUser) res.status(400).json({ message: "user already taken" });
 
 	const salt = await bcrypt.genSalt(10);
@@ -21,13 +21,13 @@ const createUser = asyncHandler(async (req, res) => {
 		await newUser.save();
 		getToken(res, newUser._id);
 		res.status(201).json({
-			_id: newUser.id,
+			_id: newUser._id,
 			username: newUser.username,
 			email: newUser.email,
 			isAdmin: newUser.isAdmin,
-		});
+		}); 
 	} catch (error) {
-		res.status(40);
+		res.status(400);
 		throw new Error("invalid data");
 	}
 });
