@@ -31,5 +31,32 @@ const createUser = asyncHandler(async (req, res) => {
 		throw new Error("invalid data");
 	}
 });
+  
+ const loginUser = asyncHandler(async()=> {
+    const {email, password} = req.body;
+	const existingUser = await user.findOne({email});
+	if(existingUser) {
+		const matchPassword = await bcrypt.compare(password, foundUser.password);
+		 if(matchPassword){
+			getToken(res, existingUser._id);
 
-export { createUser };
+			res.status(201).json({
+				_id: existingUser._id,
+				username: existing.username,
+				email: existing.email,
+				isAdmin: existing.isAdmin,
+			});
+			return;
+		 }
+	}
+ })
+
+     const logoutUser = asyncHandler(async() => {
+           res.cookie("jwt", "", {
+			httpOnly: true,
+			expiresIn: new Date()
+		   });
+		   res.status(204).json({"message": "you have been loggesout"})
+
+	 })
+export { createUser, loginUser, logoutUser };
