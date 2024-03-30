@@ -32,31 +32,31 @@ const createUser = asyncHandler(async (req, res) => {
 	}
 });
   
- const loginUser = asyncHandler(async()=> {
+ const loginUser = asyncHandler(async(req, res)=> {
     const {email, password} = req.body;
 	const existingUser = await user.findOne({email});
 	if(existingUser) {
-		const matchPassword = await bcrypt.compare(password, foundUser.password);
+		const matchPassword = await bcrypt.compare(password, existingUser.password);
 		 if(matchPassword){
 			getToken(res, existingUser._id);
 
 			res.status(201).json({
 				_id: existingUser._id,
-				username: existing.username,
-				email: existing.email,
-				isAdmin: existing.isAdmin,
+				username: existingUser.username,
+				email: existingUser.email,
+				isAdmin: existingUser.isAdmin,
 			});
 			return;
 		 }
-	}
+	} 
  })
 
-     const logoutUser = asyncHandler(async() => {
+     const logoutUser = asyncHandler(async(req, res) => {
            res.cookie("jwt", "", {
 			httpOnly: true,
-			expiresIn: new Date()
+			expiresIn: new Date(0)
 		   });
-		   res.status(204).json({"message": "you have been loggesout"})
+		   res.status(204).json({message: "you have been loggesout"})
 
 	 })
 export { createUser, loginUser, logoutUser };
